@@ -1,0 +1,17 @@
+TEMAT
+Z czego wynikaj¹ wysokie ró¿nice wrekompensatach oryginalnych i wnioskowanych?
+
+UCZESTNICY
+Mateusz Andzelak, Micha³ Kitowski, Liliana Gmerek, Jakub Formella
+
+OPIS GITA
+Na GitHub wrzucamy wszystko na Branch Master. 
+Kolejnoœæ przed COMMITEM
+1. PULL
+2. COMMIT - (komentarz task z JIRA - git commit -m 'JDSZ2-ApaczeJDSZ2AP-13/opis zmian'
+2. PUSH 
+
+OPIS JIRA
+1. TASK plus ewentualnie SUBTASK
+2. OPIS 
+3. KOMENTARZ - wnioski z zadania plus link github
