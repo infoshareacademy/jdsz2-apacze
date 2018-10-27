@@ -9,7 +9,7 @@ Co to jest wysoka roznica:
 4. zbada� skrajne warto�ci - rozklad / Micha�
 
 
--- Ponizsze pokazuje wartosc zero dla wszystkich kwartylow mnniejszych niz 0.99 (pierwszy mniejszy kwartyl to 0.95). Podstawa liczenia to roznca miedzy
+-- Ponizsze pokazuje wartosc zero dla wszystkich kwartylow mnniejszych niz 0.99 (pierwszy mniejszy kwartyl to 0.95). Podstawa liczenia to nominalna roznca miedzy
 -- kwota rekompensaty oryginalna a wyplacona. Dla wartosci kwartyla 0.99 wartosc roznicy wynosi 150.
 
 select unnest(
@@ -56,12 +56,56 @@ select to_char(data_utworzenia, 'YYYY-MM'),
   from wnioski_kwartyl_99
 group by 1
 
+--2.wplyw kod kraju
+
+--Usuwam dane wczesniejsze niz 2017-6 i patrze na wnioski
+
+with wnioski_kwartyl_99 as (
+select *, kwota_rekompensaty_oryginalna - kwota_rekompensaty as roznica_kwot_oryg_reko
+  from wnioski
+  where kwota_rekompensaty_oryginalna - kwota_rekompensaty >= 125 and stan_wniosku like '%wypl%'
+)
+
+select kod_kraju, count(1)
+  from wnioski_kwartyl_99
+where to_char(data_utworzenia, 'YYYY-MM') like '2017%' or to_char(data_utworzenia, 'YYYY-MM') like '2018%'
+group by kod_kraju
+
+-- Najwiecej takich skrajnych wnioskow pochodzi z ZZ oraz IE, na nich sie skupiam w dalszej analzie
+
+--3.wplyw klient biznesowy a inny
+
+with wnioski_kwartyl_99 as (
+select *, kwota_rekompensaty_oryginalna - kwota_rekompensaty as roznica_kwot_oryg_reko
+  from wnioski
+  where kwota_rekompensaty_oryginalna - kwota_rekompensaty >= 125 and stan_wniosku like '%wypl%'
+  and kod_kraju in ('ZZ', 'IE') and (to_char(data_utworzenia, 'YYYY-MM') like '2017%' or to_char(data_utworzenia, 'YYYY-MM') like '2018%')
+)
+
+select typ_podrozy, count(1)
+  from wnioski_kwartyl_99
+group by typ_podrozy
+
+--Wszystkie wnioski w przedziale nie maja przydzielonego typu podrozy.
+
+--4.wplyw liczba pasazerow
 
 
---2.wplyw partnera
+with wnioski_kwartyl_99 as (
+select *, kwota_rekompensaty_oryginalna - kwota_rekompensaty as roznica_kwot_oryg_reko
+  from wnioski
+  where kwota_rekompensaty_oryginalna - kwota_rekompensaty >= 125 and stan_wniosku like '%wypl%'
+  and kod_kraju in ('ZZ', 'IE') and (to_char(data_utworzenia, 'YYYY-MM') like '2017%' or to_char(data_utworzenia, 'YYYY-MM') like '2018%')
+)
 
---3.wplyw kod kraju
+select liczba_pasazerow, count(1)
+  from wnioski_kwartyl_99
+group by liczba_pasazerow
 
---4.wplyw klient biznesowy
+--- Prawie caly zbior posiada 1 lub 2 pasazerow, wieksza ilosc jest juz nie warta uwagi (łącznie 4 wnioski)
 
---5.wplyw liczba pasazerow
+/* Badane wnioski ze 0.99 percentyla. Od czerwca 2017 nastapila stabilazacja sredniomiesieczna w grupie. Najwiecej wnioskow pochodzi z ZZ oraz IE. Ograniczajac sie tylko
+do tych dwoch krajow, zaden wniosek nie ma przypisanego typu klienta (ani biznesowy, ani prywatny). To moze oznaczac ze takie wnioski maja pewne braki w danych.
+Patrzac na powyzsze dane z perspektywy ilosci pasazerow widac ze prawie wszystkie wnioski mialy 1 (liczba 641) lub 2 pasazerow (liczba 199), wyzsze ilosci sa skrajne (lacznie 2).
+ */
+
