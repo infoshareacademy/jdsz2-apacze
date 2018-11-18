@@ -51,7 +51,11 @@ and kwota_rekompensaty <> 0
 --and 100.0*(kwota_rekompensaty_oryginalna-kwota_rekompensaty)/kwota_rekompensaty > 100
 order by 5 desc
 )
-select partner, max(roznica),sum(roznica)
+select partner, max(roznica),sum(roznica),round(avg(roznica),0),
+       percentile_disc(0.5) within group (order by roznica) as mediana,
+       percentile_disc(0.25) within group (order by roznica) as P25,
+       percentile_disc(0.75) within group (order by roznica) as P75,
+       percentile_disc(0.999) within group (order by roznica) as P99
 from partnerzy
 group by partner
 
