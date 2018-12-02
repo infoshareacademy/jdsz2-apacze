@@ -40,24 +40,28 @@ order by 4 desc
 ----
 
 -----------Analiza: 2.2.wplyw partnera
+
+
 with partnerzy as (
-  select partner,kwota_rekompensaty as wyplacone,kwota_rekompensaty_oryginalna,
+  select partner,count(*) over(PARTITION BY partner) as liczba,kwota_rekompensaty as wyplacone,kwota_rekompensaty_oryginalna,
        abs(kwota_rekompensaty_oryginalna-kwota_rekompensaty) as roznica,
        100.0*(kwota_rekompensaty_oryginalna-kwota_rekompensaty)/kwota_rekompensaty as procent
 from wnioski
 where lower(stan_wniosku) like 'wypl%'
 and kwota_rekompensaty - kwota_rekompensaty_oryginalna <> 0
 and kwota_rekompensaty <> 0
---and 100.0*(kwota_rekompensaty_oryginalna-kwota_rekompensaty)/kwota_rekompensaty > 100
 order by 5 desc
-)
-select partner, max(roznica),sum(roznica),round(avg(roznica),0),
+)------jak do Tableau do bez dołu VVVVVV
+select partner,liczba,min(roznica),max(roznica),sum(roznica),round(avg(roznica),0),
        percentile_disc(0.5) within group (order by roznica) as mediana,
        percentile_disc(0.25) within group (order by roznica) as P25,
        percentile_disc(0.75) within group (order by roznica) as P75,
        percentile_disc(0.999) within group (order by roznica) as P99
 from partnerzy
-group by partner
+group by partner,liczba
+
+
+
 
 -----------Analiza: 2.3.wplyw kod kraju
 with partnerzy as (
