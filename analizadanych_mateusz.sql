@@ -43,7 +43,7 @@ order by 4 desc
 
 
 with partnerzy as (
-  select partner,count(*) over(PARTITION BY partner) as liczba,kwota_rekompensaty as wyplacone,kwota_rekompensaty_oryginalna,
+  select typ_podrozy,count(*) over(PARTITION BY typ_podrozy) as liczba,kwota_rekompensaty as wyplacone,kwota_rekompensaty_oryginalna,
        abs(kwota_rekompensaty_oryginalna-kwota_rekompensaty) as roznica,
        100.0*(kwota_rekompensaty_oryginalna-kwota_rekompensaty)/kwota_rekompensaty as procent
 from wnioski
@@ -83,7 +83,7 @@ order by 2 desc
 
 -----------Analiza: 2.4.wplyw klient
 with partnerzy as (
-  select id,partner,kwota_rekompensaty as wyplacone,kwota_rekompensaty_oryginalna,
+  select id,partner,kwota_rekompensaty as wyplacone,kwota_rekompensaty_oryginalna as oryginalna,
        abs(kwota_rekompensaty_oryginalna-kwota_rekompensaty) as roznica,
        100.0*(kwota_rekompensaty_oryginalna-kwota_rekompensaty)/kwota_rekompensaty as procent
 from wnioski
@@ -93,10 +93,10 @@ and kwota_rekompensaty <> 0
 --and 100.0*(kwota_rekompensaty_oryginalna-kwota_rekompensaty)/kwota_rekompensaty > 100
 order by 5 desc
 )
-select typ_podrozy,sum(roznica)
+select typ_podrozy,oryginalna,wyplacone,roznica,procent
 from partnerzy p
 join wnioski w on p.id = w.id
-group by typ_podrozy
+group by typ_podrozy,oryginalna,wyplacone,roznica,procent
 order by 2 desc
 
 --- nie ma wpływu
