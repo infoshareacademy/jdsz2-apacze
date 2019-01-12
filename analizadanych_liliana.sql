@@ -58,3 +58,21 @@ Analiza:
 4.wplyw klient biznesowy
 
 5.wplyw liczba pasazerow
+
+
+---korelacja miedzy liczba pasazerow a typem podrozy dla wnioskow wyplaconych z rekompensata powyzej 0
+
+select id, liczba_pasazerow, typ_podrozy from wnioski
+where abs(kwota_rekompensaty - kwota_rekompensaty_oryginalna) > 0
+and stan_wniosku = 'wyplacony';
+
+--- korelacja miedzy liczba pasazerow a wysokoscia roznic w kwocie rekompensaty
+
+select *, abs(kwota_rekompensaty - kwota_rekompensaty_oryginalna) as roznica_rek,
+       CASE
+        when liczba_pasazerow > 1 then abs(kwota_rekompensaty - kwota_rekompensaty_oryginalna)/ liczba_pasazerow
+        else abs(kwota_rekompensaty - kwota_rekompensaty_oryginalna)
+   end as rek_per1pas
+from wnioski
+where abs(kwota_rekompensaty - kwota_rekompensaty_oryginalna) > 0
+and stan_wniosku = 'wyplacony';
