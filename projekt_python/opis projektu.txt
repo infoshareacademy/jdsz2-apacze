@@ -2,11 +2,13 @@ http://home.agh.edu.pl/~chwiej/mn/generatory_2015.pdf
 http://www.if.pw.edu.pl/~agatka/numeryczne/wyklad_12.pdf
 
 1. Wygenerowaæ liczby za pomoc¹ "Generatora liczb z rozk³adu normalnego" dwoma metodami
-- Metod¹ Boxa-Mullera
-- Metod¹ Centralnego twierdzenia granicznego
+- Metod¹ Boxa-Mullera (funkcja)
+- Metod¹ Centralnego twierdzenia granicznego(funkcja)
 
 2. Przetestowaæ czy generetory, generuj¹ w taki sam sposób jak wbudowany w Pythona generator liczb z rozk³adu normalnego
 
 3. Wykonaæ testy statystyczne:
 - Test Shapiro-Wilka
 - Test Kolmogorov–Smirnov
+
+- Test Monte Carlo
