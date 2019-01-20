@@ -21,14 +21,14 @@ u2 = random.rand(4000)
 z1,z2 = box_muller(u1,u2)
 
 #print(z1,z2)
-plt.hist(z1)
-plt.hist(z2)
+#plt.hist(z1)
+#plt.hist(z2)
 
 ###Generator Python
 mu, sigma = 0, 0.1
 g1 = random.normal(mu, sigma, 4000)
-plt.hist(g1)
-plt.show()
+#plt.hist(g1)
+#plt.show()
 
 ##test Shapiro - Wilk
 szapiro = scipy.stats.shapiro(z1)
@@ -43,20 +43,20 @@ print("\n",ks)
 ##wykresy
 ##rezultat: tabela ktora porownuje rezultaty w zaleznosci od wybranego testu i zmiennych
 
-def sampling2pmf(n, dist, m=10000):
-  """
-  n: sample size for each experiment
-  m: how many times do you do experiment, fix in 10000
-  dist: frozen distribution
-  """
-  ber_dist = dist
-  sum_of_samples = []
-  for i in range(m):
-    samples = ber_dist.rvs(size=n)
-    sum_of_samples.append(np.sum(samples))
-  val, cnt = np.unique(sum_of_samples, return_counts=True)
-  pmf = cnt / len(sum_of_samples)
-  return val, pmf
 
-sampling2pmf()
+###CLT
 
+x = random.uniform(-1,1,50)
+print(x)
+x_mean = np.mean(x)
+x_var = np.var(x)
+x_std = np.std(x)
+print("wariancja {} średnia {} odchylenie standardowe {}".format(x_var, x_mean, x_std))
+
+n=50
+
+for i in range(n):
+  y_clt = np.mean((x[:i]-(x_mean*i)))/(x_std/np.sqrt(n))
+
+plt.hist(y_clt)
+plt.show()
