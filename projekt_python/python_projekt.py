@@ -38,6 +38,10 @@ print("\nShapiro-Wilk\n", szapiro)
 ks = scipy.stats.kstest(z1, 'norm')
 print("\n",ks)
 
+##centralne twierdzenie graniczne
+##test metoda montecarlo
+##wykresy
+##rezultat: tabela ktora porownuje rezultaty w zaleznosci od wybranego testu i zmiennych
 
 def sampling2pmf(n, dist, m=10000):
   """
