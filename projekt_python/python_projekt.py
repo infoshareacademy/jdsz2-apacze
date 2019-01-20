@@ -39,4 +39,20 @@ ks = scipy.stats.kstest(z1, 'norm')
 print("\n",ks)
 
 
+def sampling2pmf(n, dist, m=10000):
+  """
+  n: sample size for each experiment
+  m: how many times do you do experiment, fix in 10000
+  dist: frozen distribution
+  """
+  ber_dist = dist
+  sum_of_samples = []
+  for i in range(m):
+    samples = ber_dist.rvs(size=n)
+    sum_of_samples.append(np.sum(samples))
+  val, cnt = np.unique(sum_of_samples, return_counts=True)
+  pmf = cnt / len(sum_of_samples)
+  return val, pmf
+
+sampling2pmf()
 
