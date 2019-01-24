@@ -69,7 +69,7 @@ def clt_transform(x_size, out_count):
 # uniformly distributed values between 0 and 1
 u_1 = random.rand(4000)
 u_2 = random.rand(4000)
-bm_1, bm2 = box_muller_transform(u_1, u_2)
+bm_1, bm_2 = box_muller_transform(u_1, u_2)
 
 # Generate numbers with Central Limit Theorem transformation
 clt_1 = clt_transform(30, 1000)
@@ -88,10 +88,10 @@ plt.show()
 # Part 3
 
 # Shapiro - Wilk test
-szapiro = scipy.stats.shapiro(z1)
+szapiro = scipy.stats.shapiro(bm_1)
 print("\nShapiro-Wilk\n", szapiro)
 
 # Kołmogorov - Smirnov test
-ks = scipy.stats.kstest(z1, 'norm')
+ks = scipy.stats.kstest(bm_1, 'norm')
 print("\n", ks)
 
