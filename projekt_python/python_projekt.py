@@ -46,7 +46,7 @@ def box_muller_transform(inp_u1, inp_u2):
 
 def clt_transform(x_size, out_count):
     """
-    Box Muller transformation function
+    CLT transformation function
     :param x_size: int (N)
     :param out_count: int (count of generated output numbers)
     :return: transformed list of values
@@ -76,6 +76,28 @@ clt_1 = clt_transform(30, 1000)
 
 
 # Part 2
+
+def rand_norm_generator(mu, sigma, cnt_nb):
+    """
+    Random Normal generator
+    :param mu: int, float
+    :param sigma: int, float
+    :param cnt_nb: int (count numb)
+    :return: list, rand norm
+    """
+
+    try:
+        output_rand_norm = random.normal(mu, sigma, cnt_nb)
+    except (TypeError, AttributeError) as msg:
+        logging.warning(msg='Error {0}, \nexiting program'.format(msg))
+        exit(0)
+
+    return output_rand_norm
+
+
+g_1 = rand_norm_generator(0, 0.1, 4000)
+plt.hist(g_1)
+plt.show()
 
 plt.hist(bm_1)
 plt.hist(bm_2)
