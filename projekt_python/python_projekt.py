@@ -24,6 +24,8 @@ from numpy import random, sqrt, log, sin, cos, pi
 logging.basicConfig()
 
 
+# Part 1
+
 def box_muller_transform(inp_u1, inp_u2):
     """
     Box Muller transformation function
@@ -42,55 +44,54 @@ def box_muller_transform(inp_u1, inp_u2):
     return out_z1, out_z2
 
 
+def clt_transform(x_size, out_count):
+    """
+    Box Muller transformation function
+    :param x_size: int (N)
+    :param out_count: int (count of generated output numbers)
+    :return: transformed list of values
+    """
+
+    try:
+        output_clt = []
+        for k in range(out_count):
+            trans_x = np.random.uniform(-1, 1, size=x_size)
+            trans_value = np.mean(trans_x - np.mean(trans_x)) / (np.std(trans_x) / np.sqrt(x_size))
+            output_clt.append(trans_value)
+    except (TypeError, AttributeError, ZeroDivisionError) as msg:
+        logging.warning(msg='Error {0}, \nexiting program'.format(msg))
+        exit(0)
+
+    return output_clt
 
 
-
-
-
+# Generate numbers with Box Muller transformation
 # uniformly distributed values between 0 and 1
-u1 = random.rand(4000)
-u2 = random.rand(4000)
+u_1 = random.rand(4000)
+u_2 = random.rand(4000)
+bm_1, bm2 = box_muller_transform(u_1, u_2)
 
-# run the transformation
-z1,z2 = box_muller_transform(u1,u2)
+# Generate numbers with Central Limit Theorem transformation
+clt_1 = clt_transform(30, 1000)
 
-#print(z1,z2)
-#plt.hist(z1)
-#plt.hist(z2)
 
-###Generator Python
-mu, sigma = 0, 0.1
-g1 = random.normal(mu, sigma, 4000)
-#plt.hist(g1)
-#plt.show()
+# Part 2
 
-##test Shapiro - Wilk
+plt.hist(bm_1)
+plt.hist(bm_2)
+plt.show()
+
+plt.hist(clt_1)
+plt.show()
+
+
+# Part 3
+
+# Shapiro - Wilk test
 szapiro = scipy.stats.shapiro(z1)
 print("\nShapiro-Wilk\n", szapiro)
 
-##test Kołmogorov - Smirnov
+# Kołmogorov - Smirnov test
 ks = scipy.stats.kstest(z1, 'norm')
-print("\n",ks)
+print("\n", ks)
 
-##centralne twierdzenie graniczne
-##test metoda montecarlo
-##wykresy
-##rezultat: tabela ktora porownuje rezultaty w zaleznosci od wybranego testu i zmiennych
-
-
-###CLT
-
-x = random.uniform(-1,1,50)
-print(x)
-x_mean = np.mean(x)
-x_var = np.var(x)
-x_std = np.std(x)
-print("wariancja {} średnia {} odchylenie standardowe {}".format(x_var, x_mean, x_std))
-
-n=50
-
-for i in range(n):
-  y_clt = np.mean((x[:i]-(x_mean*i)))/(x_std/np.sqrt(n))
-
-plt.hist(y_clt)
-plt.show()
