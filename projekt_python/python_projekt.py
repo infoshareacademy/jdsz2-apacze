@@ -96,24 +96,42 @@ def rand_norm_generator(mu, sigma, cnt_nb):
 
 
 g_1 = rand_norm_generator(0, 0.1, 4000)
-plt.hist(g_1)
+plt.hist(g_1, facecolor='g')
+plt.title('Random Normal generator')
 plt.show()
 
-plt.hist(bm_1)
-plt.hist(bm_2)
+plt.hist(bm_1, facecolor='b')
+plt.hist(bm_2, facecolor='y')
+plt.title('Box - Muller')
 plt.show()
 
-plt.hist(clt_1)
+plt.hist(clt_1, facecolor='c')
+plt.title('Central Limit Theorem')
 plt.show()
 
 
 # Part 3
 
+#3.1 Tests for Box - Muller
+print('========  Tests for Box - Muller  =========')
 # Shapiro - Wilk test
-szapiro = scipy.stats.shapiro(bm_1)
-print("\nShapiro-Wilk\n", szapiro)
+shap_w_bm_1 = scipy.stats.shapiro(bm_1)
+print("\nShapiro-Wilk Test\n", shap_w_bm_1)
 
 # Kołmogorov - Smirnov test
-ks = scipy.stats.kstest(bm_1, 'norm')
-print("\n", ks)
+kol_smir_bm_1 = scipy.stats.kstest(bm_1, 'norm')
+print("\nKołmogorov - Smirnov Test\n", kol_smir_bm_1)
 
+# Monte Carlo
+
+# 3.2 Tests for Central Limit Theorem
+print('========  Tests for Central Limit Theorem  =========')
+# Shapiro - Wilk test
+shap_w_clt_1 = scipy.stats.shapiro(clt_1)
+print("\nShapiro-Wilk Test\n", shap_w_clt_1)
+
+# Kołmogorov - Smirnov test
+kol_smir_clt_1 = scipy.stats.kstest(clt_1, 'norm')
+print("\nKołmogorov - Smirnov Test\n", kol_smir_clt_1)
+
+# Monte Carlo
