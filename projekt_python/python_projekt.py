@@ -96,17 +96,20 @@ def rand_norm_generator(mu, sigma, cnt_nb):
 
 
 g_1 = rand_norm_generator(0, 0.1, 4000)
-plt.hist(g_1, facecolor='g')
+plt.hist(g_1, 100, facecolor='green', alpha=0.75)
 plt.title('Random Normal generator')
+plt.grid(linestyle='--', linewidth=0.5)
 plt.show()
 
-plt.hist(bm_1, facecolor='b')
-plt.hist(bm_2, facecolor='y')
+plt.hist(bm_1, 100, facecolor='blue', alpha=0.75)
+plt.hist(bm_2, 100, facecolor='yellow', alpha=0.70)
 plt.title('Box - Muller')
+plt.grid(linestyle='--', linewidth=0.5)
 plt.show()
 
-plt.hist(clt_1, facecolor='c')
+plt.hist(clt_1, 100, facecolor='red', alpha=0.75)
 plt.title('Central Limit Theorem')
+plt.grid(linestyle='--', linewidth=0.5)
 plt.show()
 
 
