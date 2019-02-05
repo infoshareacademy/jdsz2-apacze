@@ -11,11 +11,11 @@ http://www.if.pw.edu.pl/~agatka/numeryczne/wyklad_12.pdf
 3. Wykonaæ testy statystyczne:
 - Test Shapiro-Wilka
 - Test Kolmogorov–Smirnov
-- Test Monte Carlo
+
+4. Check the output with Monte Carlo theory
 """
 
 import logging
-import pandas as pd
 import numpy as np
 import scipy.stats
 import matplotlib.pyplot as plt
@@ -115,7 +115,7 @@ plt.show()
 
 # Part 3
 
-#3.1 Tests for Box - Muller
+# 3.1 Tests for Box - Muller
 print('========  Tests for Box - Muller  =========')
 # Shapiro - Wilk test
 shap_w_bm_1 = scipy.stats.shapiro(bm_1)
@@ -125,10 +125,8 @@ print("\nShapiro-Wilk Test\n", shap_w_bm_1)
 kol_smir_bm_1 = scipy.stats.kstest(bm_1, 'norm')
 print("\nKołmogorov - Smirnov Test\n", kol_smir_bm_1)
 
-# Monte Carlo
-
 # 3.2 Tests for Central Limit Theorem
-print('========  Tests for Central Limit Theorem  =========')
+print('\n========  Tests for Central Limit Theorem  =========')
 # Shapiro - Wilk test
 shap_w_clt_1 = scipy.stats.shapiro(clt_1)
 print("\nShapiro-Wilk Test\n", shap_w_clt_1)
@@ -137,4 +135,47 @@ print("\nShapiro-Wilk Test\n", shap_w_clt_1)
 kol_smir_clt_1 = scipy.stats.kstest(clt_1, 'norm')
 print("\nKołmogorov - Smirnov Test\n", kol_smir_clt_1)
 
-# Monte Carlo
+
+# Part 4 Test 1000 runs based on Monte Carlo assumption
+
+pv_counter_box_miller_shapiro = []
+pv_counter_box_miller_kolmogorow = []
+pv_counter_clt_shapiro = []
+pv_counter_clt_kolmogorow = []
+
+for i in range(1000):
+    u_1 = random.rand(4000)
+    u_2 = random.rand(4000)
+    bm_1, bm_2 = box_muller_transform(u_1, u_2)
+    clt_1 = clt_transform(30, 1000)
+
+    shap_w_bm_1 = scipy.stats.shapiro(bm_1)
+    pv_counter_box_miller_shapiro.append(shap_w_bm_1[1])
+    kol_smir_bm_1 = scipy.stats.kstest(bm_1, 'norm')
+    pv_counter_box_miller_kolmogorow.append(kol_smir_bm_1.pvalue)
+
+    shap_w_clt_1 = scipy.stats.shapiro(clt_1)
+    pv_counter_clt_shapiro.append(shap_w_clt_1[1])
+    kol_smir_clt_1 = scipy.stats.kstest(clt_1, 'norm')
+    pv_counter_clt_kolmogorow.append(kol_smir_clt_1.pvalue)
+
+# count and results
+if len([1 for i in pv_counter_box_miller_shapiro if i > 0.05]) / 1000.0 > 0.5:
+    print('Box Miller by Shapiro test reject normality')
+else:
+    print('Box Miller by Shapiro test does not reject normality')
+
+if len([1 for i in pv_counter_box_miller_kolmogorow if i > 0.05]) / 1000.0 > 0.5:
+    print('Box Miller by Kolmogorow test reject normality')
+else:
+    print('Box Miller by Kolmogorow test does not reject normality')
+
+if len([1 for i in pv_counter_clt_shapiro if i > 0.05]) / 1000.0 > 0.5:
+    print('CLT by Shapiro test reject normality')
+else:
+    print('CLT by Shapiro test does not reject normality')
+
+if len([1 for i in pv_counter_clt_kolmogorow if i > 0.05]) / 1000.0 > 0.5:
+    print('CLT by Kolmogorow test reject normality')
+else:
+    print('CLT by Kolmogorow test does not reject normality')
