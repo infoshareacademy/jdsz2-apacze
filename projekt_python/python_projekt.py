@@ -72,11 +72,9 @@ u_2 = random.rand(4000)
 bm_1, bm_2 = box_muller_transform(u_1, u_2)
 
 # Generate numbers with Central Limit Theorem transformation
-clt_1 = clt_transform(200, 1000)
-
+clt_1 = clt_transform(100, 5000)
 
 # Part 2
-
 def rand_norm_generator(mu, sigma, cnt_nb):
     """
     Random Normal generator
@@ -113,7 +111,6 @@ plt.grid(linestyle='--', linewidth=0.5)
 plt.show()
 
 # Part 3
-
 # 3.1 Tests for Box - Muller
 print('========  Tests for Box - Muller  =========')
 # Shapiro - Wilk test
@@ -136,7 +133,6 @@ print("\nKołmogorov - Smirnov Test\n", kol_smir_clt_1)
 
 
 # Part 4 Test 1000 runs based on Monte Carlo assumption
-
 pv_counter_box_miller_shapiro = []
 pv_counter_box_miller_kolmogorow = []
 pv_counter_clt_shapiro = []
