@@ -72,7 +72,7 @@ u_2 = random.rand(4000)
 bm_1, bm_2 = box_muller_transform(u_1, u_2)
 
 # Generate numbers with Central Limit Theorem transformation
-clt_1 = clt_transform(30, 1000)
+clt_1 = clt_transform(200, 1000)
 
 
 # Part 2
@@ -112,7 +112,6 @@ plt.title('Central Limit Theorem')
 plt.grid(linestyle='--', linewidth=0.5)
 plt.show()
 
-
 # Part 3
 
 # 3.1 Tests for Box - Muller
@@ -143,7 +142,9 @@ pv_counter_box_miller_kolmogorow = []
 pv_counter_clt_shapiro = []
 pv_counter_clt_kolmogorow = []
 
-for i in range(1000):
+long_i = 100.0
+
+for i in range(int(long_i)):
     u_1 = random.rand(4000)
     u_2 = random.rand(4000)
     bm_1, bm_2 = box_muller_transform(u_1, u_2)
@@ -160,22 +161,22 @@ for i in range(1000):
     pv_counter_clt_kolmogorow.append(kol_smir_clt_1.pvalue)
 
 # count and results
-if len([1 for i in pv_counter_box_miller_shapiro if i > 0.05]) / 1000.0 > 0.5:
+if len([1 for i in pv_counter_box_miller_shapiro if i < 0.05]) / long_i > 0.5:
     print('Box Miller by Shapiro test reject normality')
 else:
     print('Box Miller by Shapiro test does not reject normality')
 
-if len([1 for i in pv_counter_box_miller_kolmogorow if i > 0.05]) / 1000.0 > 0.5:
+if len([1 for i in pv_counter_box_miller_kolmogorow if i < 0.05]) / long_i > 0.5:
     print('Box Miller by Kolmogorow test reject normality')
 else:
     print('Box Miller by Kolmogorow test does not reject normality')
 
-if len([1 for i in pv_counter_clt_shapiro if i > 0.05]) / 1000.0 > 0.5:
+if len([1 for i in pv_counter_clt_shapiro if i < 0.05]) / long_i > 0.5:
     print('CLT by Shapiro test reject normality')
 else:
     print('CLT by Shapiro test does not reject normality')
 
-if len([1 for i in pv_counter_clt_kolmogorow if i > 0.05]) / 1000.0 > 0.5:
+if len([1 for i in pv_counter_clt_kolmogorow if i < 0.05]) / long_i > 0.5:
     print('CLT by Kolmogorow test reject normality')
 else:
     print('CLT by Kolmogorow test does not reject normality')
