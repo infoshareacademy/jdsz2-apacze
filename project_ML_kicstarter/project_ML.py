@@ -11,7 +11,6 @@ from sklearn.metrics import accuracy_score
 
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC, LinearSVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
@@ -35,18 +34,40 @@ df['state'].value_counts().plot.bar()
 plt.show()
 
 ### Data preparation
-categorical_columns = ['category', 'main_category', 'country', 'currency']
+categorical_columns = ['main_category', 'country', 'currency']
 df = pd.get_dummies(df, columns=categorical_columns)
-df = df.drop(columns=['ID', 'name', 'pledged', 'usd pledged', 'usd_pledged_real', 'backers'], axis=1)
+df = df.drop(columns=['ID', 'name', 'pledged', 'usd pledged', 'usd_pledged_real', 'category'], axis=1)
 df['launched'] = pd.to_datetime(df['launched'])
 df['deadline'] = pd.to_datetime(df['deadline'])
 df['duration_days'] = df['deadline'].subtract(df['launched'])
 df['duration_days'] = df['duration_days'].astype('timedelta64[D]')
+df = df.drop(columns=['launched', 'deadline'])
+#print(df['duration_days'])
 print(df.shape)
-print(df.columns)
+#print(df['goal'])
+#print(df.isnull().any())
+
+#####outliers
+df['goal'].plot(kind='box')
+plt.show()
+
+#ax = sns.boxplot(x=df['goal'].to_frame())
+#df['goal'].to_frame()
+
+X = df.drop(columns=['state'], axis=1)
+y = df['state']
+
+sc = preprocessing.StandardScaler()
+X = pd.DataFrame(sc.fit_transform(X.values), index=X.index, columns=X.columns)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=101)
 
 
 
-#### 2.
-#X = df.drop(columns=['state'],axis=1)
-#y = df[['state']
+#### 1. KNN,  - Mateusz
+
+#### 2. Random Forest - Lila
+
+#### 3. SVM - Jakub
+
+#### 4. XGBoost
