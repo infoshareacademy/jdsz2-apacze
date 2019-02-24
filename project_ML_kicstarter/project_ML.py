@@ -20,7 +20,7 @@ from sklearn.ensemble import GradientBoostingClassifier
 
 #### Data_set
 pd.set_option('display.max_columns', 12)
-df = pd.read_csv('data\ks-projects-201801.csv')
+df = pd.read_csv('data/ks-projects-201801.csv')
 
 ### Research
 plt.subplot(221, title='Main category')
@@ -37,6 +37,10 @@ plt.show()
 categorical_columns = ['category', 'main_category', 'country', 'currency']
 df = pd.get_dummies(df, columns=categorical_columns)
 df = df.drop(columns=['ID', 'name', 'pledged', 'usd pledged', 'usd_pledged_real', 'backers'], axis=1)
+df['launched'] = pd.to_datetime(df['launched'])
+df['deadline'] = pd.to_datetime(df['deadline'])
+df['duration_days'] = df['deadline'].subtract(df['launched'])
+df['duration_days'] = df['duration_days'].astype('timedelta64[D]')
 print(df.shape)
 print(df.columns)
 
