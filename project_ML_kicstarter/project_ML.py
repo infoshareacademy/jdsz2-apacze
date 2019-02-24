@@ -36,7 +36,7 @@ plt.show()
 ### Data preparation
 categorical_columns = ['main_category', 'country', 'currency']
 df = pd.get_dummies(df, columns=categorical_columns)
-df = df.drop(columns=['ID', 'name', 'pledged', 'usd pledged', 'usd_pledged_real', 'category'], axis=1)
+df = df.drop(columns=['ID', 'name', 'pledged', 'goal', 'usd pledged', 'usd_pledged_real', 'category'], axis=1)
 df['launched'] = pd.to_datetime(df['launched'])
 df['deadline'] = pd.to_datetime(df['deadline'])
 df['duration_days'] = df['deadline'].subtract(df['launched'])
@@ -47,13 +47,11 @@ print(df.shape)
 #print(df['goal'])
 #print(df.isnull().any())
 
-#####outliers
-df['goal'].plot(kind='box')
+#####boxplot outliers
+df['usd_goal_real'].plot(kind='box', logy=True)
 plt.show()
 
-#ax = sns.boxplot(x=df['goal'].to_frame())
-#df['goal'].to_frame()
-
+####
 X = df.drop(columns=['state'], axis=1)
 y = df['state']
 
@@ -62,9 +60,10 @@ X = pd.DataFrame(sc.fit_transform(X.values), index=X.index, columns=X.columns)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=101)
 
-
-
 #### 1. KNN,  - Mateusz
+
+
+
 
 #### 2. Random Forest - Lila
 
