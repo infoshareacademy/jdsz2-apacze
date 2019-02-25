@@ -20,6 +20,11 @@ from sklearn.neighbors import BallTree
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from xgboost import XGBClassifier
+from xgboost import XGBRegressor
+from sklearn.metrics import make_scorer
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import KFold
+from sklearn.model_selection import cross_val_score
 
 #### Data_set
 pd.set_option('display.max_columns', 12)
@@ -56,12 +61,19 @@ print(df.shape)
 
 ####
 X = df.drop(columns=['state'], axis=1)
+
+df.state = pd.Categorical(df.state)
+df['state'] = df.state.cat.codes
 y = df['state']
 
 sc = preprocessing.StandardScaler()
 X = pd.DataFrame(sc.fit_transform(X.values), index=X.index, columns=X.columns)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=101)
+
+# scorer to compare results
+scorer = make_scorer(mean_squared_error)
+kfold = KFold(n_splits=5, random_state=11)
 
 #### 0. Logistic regresion
 logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1)
@@ -77,8 +89,6 @@ print('Logistic regresion:\t',acc_log)
 # plt.xlabel('x')
 # plt.show()
 
-import sys
-sys.exit(0)
 #### 1. KNN,  - Mateusz
 
 knn = KNeighborsClassifier()
@@ -86,9 +96,50 @@ knn.fit(X_train, y_train)
 acc_knn = round(knn.score(X_test, y_test) * 100, 2)
 print(acc_knn)
 
-
 #### 2. Random Forest - Lila
 
 #### 3. SVM - Jakub
 
 #### 4. XGBoost
+
+
+def run_xgboost_analysis():
+
+    a = [2, 3, 4, 5, 6, 7, 8, 9, 12, 15]
+    b = [0.09, 1.0, 1.1]
+    c = [50, 100, 150, 200, 250, 300, 320, 350, 400]
+    max_scr = 100000000000000
+    max_dep = 0
+    max_len = 0
+    max_n_est = 0
+    for i in a:
+        for j in b:
+            for k in c:
+
+                clf_xgbr = XGBRegressor(max_depth=i, learning_rate=j, n_estimators=k)
+                #
+                results = cross_val_score(clf_xgbr, X_train, y_train, cv=kfold, scoring=scorer)
+                #
+                res_med = np.median(results)
+                if res_med < max_scr:
+                    max_dep = i
+                    max_len = j
+                    max_n_est = k
+                    max_scr = res_med
+
+    return max_scr, max_dep, max_len, max_n_est
+
+
+# max_scr_1, max_dep_1, max_len_1, max_n_est_1 = run_xgboost_analysis()
+# print('Best score is {0}, for parameters depth {1}, learning rate {2}, n_estimators {3}'.format(max_scr_1, max_dep_1, max_len_1, max_n_est_1))
+
+
+
+
+
+
+
+
+
+
+
