@@ -64,15 +64,15 @@ X = pd.DataFrame(sc.fit_transform(X.values), index=X.index, columns=X.columns)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=101)
 
 #### 0. Logistic regresion
-logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1)
-logreg.fit(X_train, y_train)
-acc_log = round(logreg.score(X_test, y_test) * 100, 2)
+logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1).fit(X_train, y_train)
+y_pred = logreg.predict(X_test)
+acc_log = accuracy_score(y_test, y_pred)
 print('Logistic regresion:\t',acc_log)
 
 #### Logistic regression plot
 # plt.figure(figsize=(8, 8))
 # plt.title('LOGIT')
-# plt.plot(X_test, y_test, linewidth=2)
+# plt.scatter(y_pred, y_test, linewidth=2)
 # plt.ylabel('y')
 # plt.xlabel('x')
 # plt.show()
