@@ -76,10 +76,10 @@ scorer = make_scorer(mean_squared_error)
 kfold = KFold(n_splits=5, random_state=11)
 
 #### 0. Logistic regresion
-logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1).fit(X_train, y_train)
-y_pred = logreg.predict(X_test)
-acc_log = accuracy_score(y_test, y_pred)
-print('Logistic regresion:\t',acc_log)
+# logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1).fit(X_train, y_train)
+# y_pred = logreg.predict(X_test)
+# res_logreg = cross_val_score(logreg, X_train, y_train, cv=kfold, scoring=scorer)
+# print('Logistic regresion:\t', res_logreg)
 
 #### Logistic regression plot
 # plt.figure(figsize=(8, 8))
@@ -91,15 +91,15 @@ print('Logistic regresion:\t',acc_log)
 
 #### 1. KNN,  - Mateusz
 
-knn = KNeighborsClassifier()
-knn.fit(X_train, y_train)
-acc_knn = round(knn.score(X_test, y_test) * 100, 2)
-print(acc_knn)
+knn = KNeighborsClassifier().fit(X_train, y_train)
+res_knn = cross_val_score(knn, X_train, y_train, cv=kfold, scoring=scorer)
+print('KNN:\t',res_knn)
 
 #### 2. Random Forest - Lila
 
 #### 3. SVM - Jakub
-
+import sys
+sys.exit(0)
 #### 4. XGBoost
 
 
