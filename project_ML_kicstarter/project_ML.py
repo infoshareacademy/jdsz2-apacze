@@ -51,17 +51,17 @@ df['duration_days'] = df['deadline'].subtract(df['launched'])
 df['duration_days'] = df['duration_days'].astype('timedelta64[D]')
 df = df.drop(columns=['launched', 'deadline'])
 #print(df['duration_days'])
-print(df.shape)
+print(df.head(5))
 #print(df['goal'])
 #print(df.isnull().any())
 
-#####boxplot outliers
-#df['usd_goal_real'].plot(kind='box', logy=True)
-#plt.show()
+#####  Delete outliers
+df = df[np.abs(df-df.mean()) <= (3*df.std())]
+df['usd_goal_real'].plot(kind='box', logy=True)
+plt.show()
 
-####
+####  Variables X,y
 X = df.drop(columns=['state'], axis=1)
-
 df.state = pd.Categorical(df.state)
 df['state'] = df.state.cat.codes
 y = df['state']
@@ -76,10 +76,10 @@ scorer = make_scorer(mean_squared_error)
 kfold = KFold(n_splits=5, random_state=11)
 
 #### 0. Logistic regresion
-# logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1).fit(X_train, y_train)
-# y_pred = logreg.predict(X_test)
-# res_logreg = cross_val_score(logreg, X_train, y_train, cv=kfold, scoring=scorer)
-# print('Logistic regresion:\t', res_logreg)
+logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1).fit(X_train, y_train)
+y_pred = logreg.predict(X_test)
+res_logreg = cross_val_score(logreg, X_train, y_train, cv=kfold, scoring=scorer)
+print('Logistic regresion:\t', res_logreg)
 
 #### Logistic regression plot
 # plt.figure(figsize=(8, 8))
@@ -91,9 +91,9 @@ kfold = KFold(n_splits=5, random_state=11)
 
 #### 1. KNN,  - Mateusz
 
-knn = KNeighborsClassifier().fit(X_train, y_train)
-res_knn = cross_val_score(knn, X_train, y_train, cv=kfold, scoring=scorer)
-print('KNN:\t',res_knn)
+# knn = KNeighborsClassifier().fit(X_train, y_train)
+# res_knn = cross_val_score(knn, X_train, y_train, cv=kfold, scoring=scorer)
+# print('KNN:\t',res_knn)
 
 #### 2. Random Forest - Lila
 
