@@ -45,12 +45,16 @@ df = pd.read_csv('data/ks-projects-201801.csv')
 ### Data preparation
 categorical_columns = ['main_category', 'country', 'currency']
 df = pd.get_dummies(df, columns=categorical_columns)
+df = df[df["state"].isin(["failed", "successful"])]
+df["state"] = df["state"].apply(lambda x: 1 if x=="successful" else 0)
 df = df.drop(columns=['ID', 'name', 'pledged', 'goal', 'usd pledged', 'usd_pledged_real', 'category'], axis=1)
 df['launched'] = pd.to_datetime(df['launched'])
 df['deadline'] = pd.to_datetime(df['deadline'])
 df['duration_days'] = df['deadline'].subtract(df['launched'])
 df['duration_days'] = df['duration_days'].astype('timedelta64[D]')
 df = df.drop(columns=['launched', 'deadline'])
+
+print(df.head(1000)['state'])
 #print(df['duration_days'])
 #print(df.head(5))
 #print(df['goal'])
