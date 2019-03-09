@@ -43,11 +43,11 @@ df = pd.read_csv('data/ks-projects-201801.csv')
 #plt.show()
 
 ### Data preparation
-categorical_columns = ['main_category', 'country', 'currency']
+categorical_columns = ['main_category']
 df = pd.get_dummies(df, columns=categorical_columns)
 df = df[df["state"].isin(["failed", "successful"])]
 df["state"] = df["state"].apply(lambda x: 1 if x=="successful" else 0)
-df = df.drop(columns=['ID', 'name', 'pledged', 'goal', 'usd pledged', 'usd_pledged_real', 'category'], axis=1)
+df = df.drop(columns=['ID', 'name', 'pledged', 'goal', 'usd pledged', 'usd_pledged_real', 'category', 'currency', 'country'], axis=1)
 df['launched'] = pd.to_datetime(df['launched'])
 df['deadline'] = pd.to_datetime(df['deadline'])
 df['duration_days'] = df['deadline'].subtract(df['launched'])
@@ -60,15 +60,19 @@ df = df.drop(columns=['launched', 'deadline'])
 #print(df['goal'])
 #print(df.isnull().any())
 
-#####  Delete outliers
-# df = df[np.abs(df-df.mean()) <= (3*df.std())]
+#####  Delete outlier
+q1 = df['usd_goal_real'].quantile(0.25)
+q3 = df['usd_goal_real'].quantile(0.75)
+iqr = q3 - q1
+down = q1 - 1.5 * iqr
+up = q3 + 1.5 * iqr
+df['usd_goal_real'] = df['usd_goal_real'][(df['usd_goal_real'] > down) & (df['usd_goal_real'] < up)]
+df = df.dropna(axis=0, how='any')
 # df['usd_goal_real'].plot(kind='box', logy=True)
 # plt.show()
 
 ####  Variables X,y
 X = df.drop(columns=['state'], axis=1)
-df.state = pd.Categorical(df.state)
-df['state'] = df.state.cat.codes
 y = df['state']
 
 sc = preprocessing.StandardScaler()
@@ -81,24 +85,22 @@ scorer = make_scorer(accuracy_score)
 kfold = KFold(n_splits=5, random_state=11)
 
 #### 0. Logistic regresion
-logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1, max_iter=300).fit(X_train, y_train)
-#y_pred = logreg.predict(X_test)
+logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1, max_iter=100).fit(X_train, y_train)
+coef_print = pd.DataFrame(logreg.coef_)
 res_logreg = cross_val_score(logreg, X_train, y_train, cv=kfold, scoring=scorer)
 print('Logistic regresion:\t', res_logreg)
+#print(coef_print)
 
-#### Logistic regression plot
-# plt.figure(figsize=(8, 8))
-# plt.title('LOGIT')
-# plt.scatter(y_pred, y_test, linewidth=2)
-# plt.ylabel('y')
-# plt.xlabel('x')
-# plt.show()
+#### prediction
+y_pred = logreg.predict(X_test)
+score = accuracy_score(y_test,y_pred)
+print('Prediction for Logistic regresion model:\t', score)
 
 #### 1. KNN,  - Mateusz
 
-# knn = KNeighborsClassifier().fit(X_train, y_train)
-# res_knn = cross_val_score(knn, X_train, y_train, cv=kfold, scoring=scorer)
-# print('KNN:\t',res_knn)
+knn = KNeighborsClassifier().fit(X_train, y_train)
+res_knn = cross_val_score(knn, X_train, y_train, cv=kfold, scoring=scorer)
+print('KNN:\t',res_knn)
 
 #### 2. Random Forest - Lila
 
