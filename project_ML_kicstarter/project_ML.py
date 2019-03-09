@@ -25,6 +25,7 @@ from sklearn.metrics import make_scorer
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
+from sklearn import svm
 
 #### Data_set
 pd.set_option('display.max_columns', 12)
@@ -44,12 +45,16 @@ df = pd.read_csv('data/ks-projects-201801.csv')
 ### Data preparation
 categorical_columns = ['main_category', 'country', 'currency']
 df = pd.get_dummies(df, columns=categorical_columns)
+df = df[df["state"].isin(["failed", "successful"])]
+df["state"] = df["state"].apply(lambda x: 1 if x=="successful" else 0)
 df = df.drop(columns=['ID', 'name', 'pledged', 'goal', 'usd pledged', 'usd_pledged_real', 'category'], axis=1)
 df['launched'] = pd.to_datetime(df['launched'])
 df['deadline'] = pd.to_datetime(df['deadline'])
 df['duration_days'] = df['deadline'].subtract(df['launched'])
 df['duration_days'] = df['duration_days'].astype('timedelta64[D]')
 df = df.drop(columns=['launched', 'deadline'])
+
+#print(df.head(1000)['state'])
 #print(df['duration_days'])
 #print(df.head(5))
 #print(df['goal'])
@@ -98,36 +103,50 @@ print('Logistic regresion:\t', res_logreg)
 #### 2. Random Forest - Lila
 
 #### 3. SVM - Jakub
-import sys
-sys.exit(0)
+# clf_svm = svm.SVC(kernel='poly', C=1)
+# clf_svm.fit(X_train, y_train)
+# y_pred_svm= clf_svm.predict(X_test)
+# cv_svm = cross_val_score(knn, X_train, y_train, cv=kfold, scoring=scorer)
+# print('svm:\t',cv_svm)
+
 #### 4. XGBoost
 
 
-def run_xgboost_analysis():
+# def run_xgboost_analysis():
+#
+#     a = [2, 3, 4, 5, 6, 7, 8, 9, 12, 15]
+#     b = [0.09, 1.0, 1.1]
+#     c = [50, 100, 150, 200, 250, 300, 320, 350, 400]
+#     max_scr = 100000000000000
+#     max_dep = 0
+#     max_len = 0
+#     max_n_est = 0
+#     for i in a:
+#         for j in b:
+#             for k in c:
+#
+#                 clf_xgbr = XGBRegressor(max_depth=i, learning_rate=j, n_estimators=k)
+#                 #
+#                 results = cross_val_score(clf_xgbr, X_train, y_train, cv=kfold, scoring=scorer)
+#                 #
+#                 res_med = np.median(results)
+#                 if res_med < max_scr:
+#                     max_dep = i
+#                     max_len = j
+#                     max_n_est = k
+#                     max_scr = res_med
+#
+#     return max_scr, max_dep, max_len, max_n_est
 
-    a = [2, 3, 4, 5, 6, 7, 8, 9, 12, 15]
-    b = [0.09, 1.0, 1.1]
-    c = [50, 100, 150, 200, 250, 300, 320, 350, 400]
-    max_scr = 100000000000000
-    max_dep = 0
-    max_len = 0
-    max_n_est = 0
-    for i in a:
-        for j in b:
-            for k in c:
 
-                clf_xgbr = XGBRegressor(max_depth=i, learning_rate=j, n_estimators=k)
-                #
-                results = cross_val_score(clf_xgbr, X_train, y_train, cv=kfold, scoring=scorer)
-                #
-                res_med = np.median(results)
-                if res_med < max_scr:
-                    max_dep = i
-                    max_len = j
-                    max_n_est = k
-                    max_scr = res_med
+######### Bayes
 
-    return max_scr, max_dep, max_len, max_n_est
+# clf_gnb = GaussianNB()
+# clf_gnb.fit(X_train,y_train)
+# clf_gnb.fit(X_train,y_train)
+# y_pred_gnb = clf_gnb.predict(X_test)
+# cv_gnb = cross_val_score(clf_gnb, X_train, y_train, cv=kfold, scoring=scorer)
+# print('Bayes:\t', cv_gnb)
 
 
 # max_scr_1, max_dep_1, max_len_1, max_n_est_1 = run_xgboost_analysis()
