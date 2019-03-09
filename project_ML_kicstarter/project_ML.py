@@ -51,14 +51,14 @@ df['duration_days'] = df['deadline'].subtract(df['launched'])
 df['duration_days'] = df['duration_days'].astype('timedelta64[D]')
 df = df.drop(columns=['launched', 'deadline'])
 #print(df['duration_days'])
-print(df.head(5))
+#print(df.head(5))
 #print(df['goal'])
 #print(df.isnull().any())
 
 #####  Delete outliers
-df = df[np.abs(df-df.mean()) <= (3*df.std())]
-df['usd_goal_real'].plot(kind='box', logy=True)
-plt.show()
+# df = df[np.abs(df-df.mean()) <= (3*df.std())]
+# df['usd_goal_real'].plot(kind='box', logy=True)
+# plt.show()
 
 ####  Variables X,y
 X = df.drop(columns=['state'], axis=1)
@@ -72,12 +72,12 @@ X = pd.DataFrame(sc.fit_transform(X.values), index=X.index, columns=X.columns)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=101)
 
 # scorer to compare results
-scorer = make_scorer(mean_squared_error)
+scorer = make_scorer(accuracy_score)
 kfold = KFold(n_splits=5, random_state=11)
 
 #### 0. Logistic regresion
 logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1).fit(X_train, y_train)
-y_pred = logreg.predict(X_test)
+#y_pred = logreg.predict(X_test)
 res_logreg = cross_val_score(logreg, X_train, y_train, cv=kfold, scoring=scorer)
 print('Logistic regresion:\t', res_logreg)
 
