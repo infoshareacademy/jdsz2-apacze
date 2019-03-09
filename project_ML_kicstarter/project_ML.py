@@ -76,7 +76,7 @@ scorer = make_scorer(accuracy_score)
 kfold = KFold(n_splits=5, random_state=11)
 
 #### 0. Logistic regresion
-logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1).fit(X_train, y_train)
+logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1, max_iter=300).fit(X_train, y_train)
 #y_pred = logreg.predict(X_test)
 res_logreg = cross_val_score(logreg, X_train, y_train, cv=kfold, scoring=scorer)
 print('Logistic regresion:\t', res_logreg)
