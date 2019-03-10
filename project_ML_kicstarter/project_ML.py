@@ -127,7 +127,7 @@ def run_xgboost_analysis():
         for j in b:
             for k in c:
 
-                clf_xgbr = XGBRegressor(max_depth=i, learning_rate=j, n_estimators=k)
+                clf_xgbr = XGBClassifier(max_depth=i, learning_rate=j, n_estimators=k)
                 #
                 results = cross_val_score(clf_xgbr, X_train, y_train, cv=kfold, scoring=scorer)
                 #
@@ -149,7 +149,6 @@ def run_xgboost_analysis():
 # y_pred_gnb = clf_gnb.predict(X_test)
 # cv_gnb = cross_val_score(clf_gnb, X_train, y_train, cv=kfold, scoring=scorer)
 # print('Bayes:\t', cv_gnb)
-
 
 # max_scr_1, max_dep_1, max_len_1, max_n_est_1 = run_xgboost_analysis()
 # print('Best score is {0}, for parameters depth {1}, learning rate {2}, n_estimators {3}'.format(max_scr_1, max_dep_1, max_len_1, max_n_est_1))
