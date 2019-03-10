@@ -26,6 +26,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
 from sklearn import svm
+from sklearn.model_selection import GridSearchCV
 
 #### Data_set
 pd.set_option('display.max_columns', 12)
@@ -85,31 +86,40 @@ scorer = make_scorer(accuracy_score)
 kfold = KFold(n_splits=5, random_state=11)
 
 #### 0. Logistic regresion
-logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1, max_iter=100).fit(X_train, y_train)
-coef_print = pd.DataFrame(logreg.coef_)
-res_logreg = cross_val_score(logreg, X_train, y_train, cv=kfold, scoring=scorer)
-print('Logistic regresion:\t', res_logreg)
-#print(coef_print)
-
-#### prediction
-y_pred = logreg.predict(X_test)
-score = accuracy_score(y_test,y_pred)
-print('Prediction for Logistic regresion model:\t', score)
+# logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1, max_iter=100).fit(X_train, y_train)
+# coef_print = pd.DataFrame(logreg.coef_)
+# res_logreg = cross_val_score(logreg, X_train, y_train, cv=kfold, scoring=scorer)
+# print('Logistic regresion:\t', res_logreg)
+# #print(coef_print)
+#
+# #### prediction
+# y_pred = logreg.predict(X_test)
+# score = accuracy_score(y_test,y_pred)
+# print('Prediction for Logistic regresion model:\t', score)
 
 #### 1. KNN,  - Mateusz
 
-knn = KNeighborsClassifier().fit(X_train, y_train)
-res_knn = cross_val_score(knn, X_train, y_train, cv=kfold, scoring=scorer)
-print('KNN:\t',res_knn)
+# knn = KNeighborsClassifier().fit(X_train, y_train)
+# res_knn = cross_val_score(knn, X_train, y_train, cv=kfold, scoring=scorer)
+# print('KNN:\t',res_knn)
 
 #### 2. Random Forest - Lila
 
 #### 3. SVM - Jakub
-# clf_svm = svm.SVC(kernel='poly', C=1)
-# clf_svm.fit(X_train, y_train)
-# y_pred_svm= clf_svm.predict(X_test)
-# cv_svm = cross_val_score(knn, X_train, y_train, cv=kfold, scoring=scorer)
-# print('svm:\t',cv_svm)
+clf_svm = LinearSVC(max_iter = 1000)
+clf_svm.fit(X_train, y_train)
+y_pred_svm= clf_svm.predict(X_test)
+cv_svm = cross_val_score(clf_svm, X_train, y_train, cv=kfold, scoring=scorer)
+print('svm results:\t', cv_svm)
+print('svm result avg:\t', cv_svm.mean())
+
+# svm = SVC()
+# parameters = {'kernel':('linear', 'rbf'), 'C':(1,0.25,0.5,0.75),'gamma': (1,2,3,'auto'),
+#               'decision_function_shape':('ovo','ovr'),'shrinking':(True,False), 'max_iter': np.arange(1,10)}
+# clf = GridSearchCV(svm, parameters)
+# clf.fit(X_train,y_train)
+# print("accuracy:"+str(np.average(cross_val_score(clf, X_train, y, scoring='accuracy'))))
+
 
 #### 4. XGBoost
 
