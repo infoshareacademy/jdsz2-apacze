@@ -106,19 +106,19 @@ kfold = KFold(n_splits=5, random_state=11)
 #### 2. Random Forest - Lila
 
 #### 3. SVM - Jakub
-clf_svm = LinearSVC(max_iter = 1000)
-clf_svm.fit(X_train, y_train)
-y_pred_svm= clf_svm.predict(X_test)
-cv_svm = cross_val_score(clf_svm, X_train, y_train, cv=kfold, scoring=scorer)
-print('svm results:\t', cv_svm)
-print('svm result avg:\t', cv_svm.mean())
+# clf_svm = LinearSVC(max_iter = 1000)
+# clf_svm.fit(X_train, y_train)
+# y_pred_svm= clf_svm.predict(X_test)
+# cv_svm = cross_val_score(clf_svm, X_train, y_train, cv=kfold, scoring=scorer)
+# print('svm results:\t', cv_svm)
+# print('svm result avg:\t', cv_svm.mean())
 
-# svm = SVC()
-# parameters = {'kernel':('linear', 'rbf'), 'C':(1,0.25,0.5,0.75),'gamma': (1,2,3,'auto'),
-#               'decision_function_shape':('ovo','ovr'),'shrinking':(True,False), 'max_iter': np.arange(1,10)}
-# clf = GridSearchCV(svm, parameters)
-# clf.fit(X_train,y_train)
-# print("accuracy:"+str(np.average(cross_val_score(clf, X_train, y, scoring='accuracy'))))
+svm = SVC()
+parameters = {'kernel':('linear', 'rbf'), 'C':(1,0.25,0.5,0.75),'gamma': (1,2,3,'auto'),
+              'decision_function_shape':('ovo','ovr'),'shrinking':(True,False)}
+clf = GridSearchCV(svm, parameters)
+clf.fit(X_train,y_train)
+print("accuracy:"+str(np.average(cross_val_score(clf, X_train, y, scoring='accuracy'))))
 
 
 #### 4. XGBoost
