@@ -115,40 +115,40 @@ kfold = KFold(n_splits=5, random_state=11)
 
 svm = SVC()
 parameters = {'kernel':('linear', 'rbf'), 'C':(1,0.25,0.5,0.75),'gamma': (1,2,3,'auto'),
-              'decision_function_shape':('ovo','ovr'),'shrinking':(True,False)}
+              'decision_function_shape':('ovo','ovr'),'shrinking':(True,False), 'max_iter': range(1, 1000)}
 clf = GridSearchCV(svm, parameters)
 clf.fit(X_train,y_train)
-print("accuracy:"+str(np.average(cross_val_score(clf, X_train, y, scoring='accuracy'))))
+print("accuracy:"+str(np.average(cross_val_score(clf, X_train, y_train, scoring='accuracy'))))
 
 
 #### 4. XGBoost
 
 
-def run_xgboost_analysis():
-
-    a = [2, 3, 4, 5, 6, 7, 8, 9, 12, 15]
-    b = [0.09, 1.0, 1.1]
-    c = [50, 100, 150, 200, 250, 300, 320, 350, 400]
-    max_scr = 0
-    max_dep = 0
-    max_len = 0
-    max_n_est = 0
-    for i in a:
-        for j in b:
-            for k in c:
-
-                clf_xgbr = XGBClassifier(max_depth=i, learning_rate=j, n_estimators=k)
-                #
-                results = cross_val_score(clf_xgbr, X_train, y_train, cv=kfold, scoring=scorer)
-                #
-                res_med = np.median(results)
-                if res_med > max_scr:
-                    max_dep = i
-                    max_len = j
-                    max_n_est = k
-                    max_scr = res_med
-
-    return max_scr, max_dep, max_len, max_n_est
+# def run_xgboost_analysis():
+#
+#     a = [2, 3, 4, 5, 6, 7, 8, 9, 12, 15]
+#     b = [0.09, 1.0, 1.1]
+#     c = [50, 100, 150, 200, 250, 300, 320, 350, 400]
+#     max_scr = 0
+#     max_dep = 0
+#     max_len = 0
+#     max_n_est = 0
+#     for i in a:
+#         for j in b:
+#             for k in c:
+#
+#                 clf_xgbr = XGBClassifier(max_depth=i, learning_rate=j, n_estimators=k)
+#                 #
+#                 results = cross_val_score(clf_xgbr, X_train, y_train, cv=kfold, scoring=scorer)
+#                 #
+#                 res_med = np.median(results)
+#                 if res_med > max_scr:
+#                     max_dep = i
+#                     max_len = j
+#                     max_n_est = k
+#                     max_scr = res_med
+#
+#     return max_scr, max_dep, max_len, max_n_est
 
 
 ######### Bayes
