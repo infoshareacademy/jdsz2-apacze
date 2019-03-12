@@ -118,7 +118,7 @@ parameters = {'kernel':('linear', 'rbf'), 'C':(1,0.25,0.5,0.75),'gamma': (1,2,3,
               'decision_function_shape':('ovo','ovr'),'shrinking':(True,False), 'max_iter': range(1, 1000)}
 clf = GridSearchCV(svm, parameters)
 clf.fit(X_train,y_train)
-print("accuracy:"+str(np.average(cross_val_score(clf, X_train, y_train, scoring='accuracy'))))
+print("accuracy:"+str(np.average(cross_val_score(clf, X_train, y_train, cv=kfold, scoring='accuracy'))))
 
 
 #### 4. XGBoost
