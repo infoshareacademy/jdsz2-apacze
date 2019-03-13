@@ -48,18 +48,46 @@ categorical_columns = ['main_category']
 df = pd.get_dummies(df, columns=categorical_columns)
 df = df[df["state"].isin(["failed", "successful"])]
 df["state"] = df["state"].apply(lambda x: 1 if x=="successful" else 0)
-df = df.drop(columns=['ID', 'name', 'pledged', 'goal', 'usd pledged', 'usd_pledged_real', 'category', 'currency', 'country'], axis=1)
+df = df.drop(columns=['ID', 'pledged', 'goal', 'usd pledged', 'usd_pledged_real', 'category', 'currency', 'country'], axis=1)
 df['launched'] = pd.to_datetime(df['launched'])
 df['deadline'] = pd.to_datetime(df['deadline'])
 df['duration_days'] = df['deadline'].subtract(df['launched'])
 df['duration_days'] = df['duration_days'].astype('timedelta64[D]')
 df = df.drop(columns=['launched', 'deadline'])
 
-#print(df.head(1000)['state'])
-#print(df['duration_days'])
-#print(df.head(5))
-#print(df['goal'])
-#print(df.isnull().any())
+####Bag of Words
+df['name'] = df['name'].astype(str)
+df['name'] = df['name'].str.split()
+
+i = 0
+for n in df['name']:
+    if 'successful' in n:
+        i = i + 1
+    if 'failed' in n:
+        i = i + 1
+#print(i)
+
+df['name'] = df['name'].apply(lambda x: ' '.join([i for i in x if i not in string.punctuation]))
+df['name'] = df['name'].str.lower()
+from nltk.corpus import stopwords
+stop = stopwords.words('english')
+
+df['name'] = df['name'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
+df['name'] = df['name'].str.split()
+
+from nltk.stem.snowball import SnowballStemmer
+stemmer = SnowballStemmer("english")
+df['name'] = df['name'].apply(lambda x: [stemmer.stem(y) for y in x])
+
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+vectorizer = CountVectorizer()
+bag_of_words = CountVectorizer(tokenizer=lambda doc: doc, lowercase=False).fit_transform(df['name'])
+print(bag_of_words.shape)
+print(bag_of_words.toarray())
+print(type(bag_of_words))
+
+import sys
+sys.exit(0)
 
 #####  Delete outlier
 q1 = df['usd_goal_real'].quantile(0.25)
@@ -72,7 +100,7 @@ df = df.dropna(axis=0, how='any')
 # df['usd_goal_real'].plot(kind='box', logy=True)
 # plt.show()
 
-####  Variables X,y
+#####  Variables X,y
 X = df.drop(columns=['state'], axis=1)
 y = df['state']
 
