@@ -83,7 +83,7 @@ df['name'] = df['name'].apply(lambda x: [stemmer.stem(y) for y in x])
 
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 vectorizer = CountVectorizer()
-bag_of_words = CountVectorizer(tokenizer=lambda doc: doc, lowercase=False).fit_transform(df['name'])
+bag_of_words = CountVectorizer().fit_transform(df['name'])
 print(bag_of_words.shape)
 print(bag_of_words.toarray())
 print(type(bag_of_words))
