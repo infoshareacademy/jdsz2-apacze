@@ -9,6 +9,8 @@ from matplotlib.colors import ListedColormap
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import  f1_score
+from sklearn.metrics import  confusion_matrix
 
 from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LogisticRegression
@@ -134,19 +136,19 @@ kfold = KFold(n_splits=5, random_state=11)
 #### 2. Random Forest - Lila
 
 #### 3. SVM - Jakub
-# clf_svm = LinearSVC(max_iter = 1000)
-# clf_svm.fit(X_train, y_train)
-# y_pred_svm= clf_svm.predict(X_test)
-# cv_svm = cross_val_score(clf_svm, X_train, y_train, cv=kfold, scoring=scorer)
-# print('svm results:\t', cv_svm)
-# print('svm result avg:\t', cv_svm.mean())
+clf_svm = LinearSVC(max_iter = 1000, C=1)
+clf_svm.fit(X_train, y_train)
+y_pred_svm= clf_svm.predict(X_test)
+cv_svm = cross_val_score(clf_svm, X_train, y_train, cv=kfold, scoring=scorer)
+print('svm results:\t', cv_svm)
+print('svm result avg:\t', cv_svm.mean())
 
-svm = SVC()
-parameters = {'kernel':('linear', 'rbf'), 'C':(1,0.25,0.5,0.75),'gamma': (1,2,3,'auto'),
-              'decision_function_shape':('ovo','ovr'),'shrinking':(True,False), 'max_iter': range(1, 1000)}
-clf = GridSearchCV(svm, parameters)
-clf.fit(X_train,y_train)
-print("accuracy:"+str(np.average(cross_val_score(clf, X_train, y_train, cv=kfold, scoring='accuracy'))))
+# svm = SVC()
+# parameters = {'kernel':('linear', 'rbf'), 'C':(1,0.25,0.5,0.75),'gamma': (1,2,3,'auto'),
+#               'decision_function_shape':('ovo','ovr'),'shrinking':(True,False), 'max_iter': range(1, 1000)}
+# clf = GridSearchCV(svm, parameters)
+# clf.fit(X_train,y_train)
+# print("accuracy:"+str(np.average(cross_val_score(clf, X_train, y_train, cv=kfold, scoring='accuracy'))))
 
 
 #### 4. XGBoost
@@ -177,6 +179,8 @@ print("accuracy:"+str(np.average(cross_val_score(clf, X_train, y_train, cv=kfold
 #                     max_scr = res_med
 #
 #     return max_scr, max_dep, max_len, max_n_est
+# max_scr_1, max_dep_1, max_len_1, max_n_est_1 = run_xgboost_analysis()
+# print('Best score is {0}, for parameters depth {1}, learning rate {2}, n_estimators {3}'.format(max_scr_1, max_dep_1, max_len_1, max_n_est_1))
 
 
 ######### Bayes
@@ -187,11 +191,6 @@ print("accuracy:"+str(np.average(cross_val_score(clf, X_train, y_train, cv=kfold
 # y_pred_gnb = clf_gnb.predict(X_test)
 # cv_gnb = cross_val_score(clf_gnb, X_train, y_train, cv=kfold, scoring=scorer)
 # print('Bayes:\t', cv_gnb)
-
-# max_scr_1, max_dep_1, max_len_1, max_n_est_1 = run_xgboost_analysis()
-# print('Best score is {0}, for parameters depth {1}, learning rate {2}, n_estimators {3}'.format(max_scr_1, max_dep_1, max_len_1, max_n_est_1))
-
-
 
 
 
