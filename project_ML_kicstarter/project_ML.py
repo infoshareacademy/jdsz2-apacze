@@ -78,7 +78,9 @@ vectorizer = TfidfVectorizer()
 bag_of_words = TfidfVectorizer(tokenizer=lambda doc: doc, lowercase=False, max_features=1000).fit_transform(df['name'])
 print(bag_of_words.shape)
 print(df.shape)
-#bow = bag_of_words.toarray()
+bow = bag_of_words.toarray()
+df = pd.concat([df,bow], axis=1)
+print(df.shape)
 
 
 import sys
