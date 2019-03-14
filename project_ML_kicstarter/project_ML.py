@@ -185,12 +185,12 @@ print('svm result avg:\t', cv_svm.mean())
 
 ######### Bayes
 
-# clf_gnb = GaussianNB()
-# clf_gnb.fit(X_train,y_train)
-# clf_gnb.fit(X_train,y_train)
-# y_pred_gnb = clf_gnb.predict(X_test)
-# cv_gnb = cross_val_score(clf_gnb, X_train, y_train, cv=kfold, scoring=scorer)
-# print('Bayes:\t', cv_gnb)
+clf_gnb = GaussianNB()
+clf_gnb.fit(X_train,y_train)
+clf_gnb.fit(X_train,y_train)
+y_pred_gnb = clf_gnb.predict(X_test)
+cv_gnb = cross_val_score(clf_gnb, X_train, y_train, cv=kfold, scoring=scorer)
+print('Bayes:\t', cv_gnb)
 
 
 
