@@ -61,14 +61,6 @@ df = df.drop(columns=['launched', 'deadline'])
 df['name'] = df['name'].astype(str)
 df['name'] = df['name'].str.split()
 
-i = 0
-for n in df['name']:
-    if 'successful' in n:
-        i = i + 1
-    if 'failed' in n:
-        i = i + 1
-#print(i)
-
 df['name'] = df['name'].apply(lambda x: ' '.join([i for i in x if i not in string.punctuation]))
 df['name'] = df['name'].str.lower()
 from nltk.corpus import stopwords
@@ -82,11 +74,14 @@ stemmer = SnowballStemmer("english")
 df['name'] = df['name'].apply(lambda x: [stemmer.stem(y) for y in x])
 
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-vectorizer = CountVectorizer()
-bag_of_words = CountVectorizer().fit_transform(df['name'])
+vectorizer = TfidfVectorizer()
+bag_of_words = TfidfVectorizer(tokenizer=lambda doc: doc, lowercase=False, max_features=1000).fit_transform(df['name'])
 print(bag_of_words.shape)
-print(bag_of_words.toarray())
-print(type(bag_of_words))
+print(df.shape)
+bow = bag_of_words.toarray()
+df = pd.concat([df,bow], axis=1)
+print(df.shape)
+
 
 import sys
 sys.exit(0)
@@ -116,11 +111,11 @@ scorer = make_scorer(accuracy_score)
 kfold = KFold(n_splits=5, random_state=11)
 
 #### 0. Logistic regresion
-# logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1, max_iter=100).fit(X_train, y_train)
-# coef_print = pd.DataFrame(logreg.coef_)
-# res_logreg = cross_val_score(logreg, X_train, y_train, cv=kfold, scoring=scorer)
-# print('Logistic regresion:\t', res_logreg)
-# #print(coef_print)
+logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1, max_iter=100).fit(X_train, y_train)
+coef_print = pd.DataFrame(logreg.coef_)
+res_logreg = cross_val_score(logreg, X_train, y_train, cv=kfold, scoring=scorer)
+print('Logistic regresion:\t', res_logreg)
+#print(coef_print)
 #
 # #### prediction
 # y_pred = logreg.predict(X_test)
@@ -136,12 +131,12 @@ kfold = KFold(n_splits=5, random_state=11)
 #### 2. Random Forest - Lila
 
 #### 3. SVM - Jakub
-clf_svm = LinearSVC(max_iter = 1000, C=1)
-clf_svm.fit(X_train, y_train)
-y_pred_svm= clf_svm.predict(X_test)
-cv_svm = cross_val_score(clf_svm, X_train, y_train, cv=kfold, scoring=scorer)
-print('svm results:\t', cv_svm)
-print('svm result avg:\t', cv_svm.mean())
+# clf_svm = LinearSVC(max_iter = 1000, C=1)
+# clf_svm.fit(X_train, y_train)
+# y_pred_svm= clf_svm.predict(X_test)
+# cv_svm = cross_val_score(clf_svm, X_train, y_train, cv=kfold, scoring=scorer)
+# print('svm results:\t', cv_svm)
+# print('svm result avg:\t', cv_svm.mean())
 
 # svm = SVC()
 # parameters = {'kernel':('linear', 'rbf'), 'C':(1,0.25,0.5,0.75),'gamma': (1,2,3,'auto'),
