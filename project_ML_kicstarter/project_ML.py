@@ -75,7 +75,7 @@ df['name'] = df['name'].apply(lambda x: [stemmer.stem(y) for y in x])
 
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 vectorizer = TfidfVectorizer()
-bag_of_words = TfidfVectorizer(tokenizer=lambda doc: doc, lowercase=False, max_features=100).fit_transform(df['name'])
+bag_of_words = TfidfVectorizer(tokenizer=lambda doc: doc, lowercase=False, max_features=50).fit_transform(df['name'])
 bow = bag_of_words.toarray()
 bow_df = pd.DataFrame(bow)
 df = pd.merge(df, bow_df, how='left', left_index=True, right_index=True)
