@@ -75,16 +75,11 @@ df['name'] = df['name'].apply(lambda x: [stemmer.stem(y) for y in x])
 
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 vectorizer = TfidfVectorizer()
-bag_of_words = TfidfVectorizer(tokenizer=lambda doc: doc, lowercase=False, max_features=1000).fit_transform(df['name'])
-print(bag_of_words.shape)
-print(df.shape)
+bag_of_words = TfidfVectorizer(tokenizer=lambda doc: doc, lowercase=False, max_features=100).fit_transform(df['name'])
 bow = bag_of_words.toarray()
-df = pd.concat([df,bow], axis=1)
-print(df.shape)
-
-
-import sys
-sys.exit(0)
+bow_df = pd.DataFrame(bow)
+df = pd.merge(df, bow_df, how='left', left_index=True, right_index=True)
+df = df.drop(columns=['name'], axis=1)
 
 #####  Delete outlier
 q1 = df['usd_goal_real'].quantile(0.25)
@@ -112,7 +107,6 @@ kfold = KFold(n_splits=5, random_state=11)
 
 #### 0. Logistic regresion
 logreg = LogisticRegression(solver='lbfgs', multi_class='auto', n_jobs=-1, max_iter=100).fit(X_train, y_train)
-coef_print = pd.DataFrame(logreg.coef_)
 res_logreg = cross_val_score(logreg, X_train, y_train, cv=kfold, scoring=scorer)
 print('Logistic regresion:\t', res_logreg)
 #print(coef_print)
@@ -179,13 +173,13 @@ print('Logistic regresion:\t', res_logreg)
 
 
 ######### Bayes
-
-clf_gnb = GaussianNB()
-clf_gnb.fit(X_train,y_train)
-clf_gnb.fit(X_train,y_train)
-y_pred_gnb = clf_gnb.predict(X_test)
-cv_gnb = cross_val_score(clf_gnb, X_train, y_train, cv=kfold, scoring=scorer)
-print('Bayes:\t', cv_gnb)
+#
+# clf_gnb = GaussianNB()
+# clf_gnb.fit(X_train,y_train)
+# clf_gnb.fit(X_train,y_train)
+# y_pred_gnb = clf_gnb.predict(X_test)
+# cv_gnb = cross_val_score(clf_gnb, X_train, y_train, cv=kfold, scoring=scorer)
+# print('Bayes:\t', cv_gnb)
 
 
 
