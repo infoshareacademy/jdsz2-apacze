@@ -58,28 +58,32 @@ df['duration_days'] = df['duration_days'].astype('timedelta64[D]')
 df = df.drop(columns=['launched', 'deadline'])
 
 ####Bag of Words
-# df['name'] = df['name'].astype(str)
-# df['name'] = df['name'].str.split()
-#
-# df['name'] = df['name'].apply(lambda x: ' '.join([i for i in x if i not in string.punctuation]))
-# df['name'] = df['name'].str.lower()
-# from nltk.corpus import stopwords
-# stop = stopwords.words('english')
-#
-# df['name'] = df['name'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
-# df['name'] = df['name'].str.split()
-#
-# from nltk.stem.snowball import SnowballStemmer
-# stemmer = SnowballStemmer("english")
-# df['name'] = df['name'].apply(lambda x: [stemmer.stem(y) for y in x])
-#
-# from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-# vectorizer = TfidfVectorizer()
-# bag_of_words = TfidfVectorizer(tokenizer=lambda doc: doc, lowercase=False, max_features=50).fit_transform(df['name'])
-# bow = bag_of_words.toarray()
-# bow_df = pd.DataFrame(bow)
-# df = pd.merge(df, bow_df, how='left', left_index=True, right_index=True)
-# df = df.drop(columns=['name'], axis=1)
+df['name'] = df['name'].astype(str)
+df['name'] = df['name'].str.split()
+
+df['name'] = df['name'].apply(lambda x: ' '.join([i for i in x if i not in string.punctuation]))
+df['name'] = df['name'].str.lower()
+from nltk.corpus import stopwords
+stop = stopwords.words('english')
+
+df['name'] = df['name'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
+df['name'] = df['name'].str.split()
+
+from nltk.stem.snowball import SnowballStemmer
+stemmer = SnowballStemmer("english")
+df['name'] = df['name'].apply(lambda x: [stemmer.stem(y) for y in x])
+
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+vectorizer = TfidfVectorizer()
+bag_of_words = TfidfVectorizer(tokenizer=lambda doc: doc, lowercase=False, max_features=50).fit_transform(df['name'])
+bow = bag_of_words.toarray()
+bow_df = pd.DataFrame(bow)
+df = pd.merge(df, bow_df, how='left', left_index=True, right_index=True)
+df = df.drop(columns=['name'], axis=1)
+print(bag_of_words.fe)
+
+import sys
+sys.exit(0)
 
 #####  Delete outlier
 q1 = df['usd_goal_real'].quantile(0.25)
